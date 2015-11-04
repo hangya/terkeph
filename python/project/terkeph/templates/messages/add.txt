@@ -1,0 +1,6 @@
+Kedves [B]{{ user.name }}[/B],
+
+[P]sikeresen elhelyezted magad a [L:{{ user.permalink_url }}]TérkéPH![/L]-en.  :) [/P]
+
+{# [OFF]A gyorsítótárazási beállítások miatt lehet hogy pár percig nem jelensz meg az új helyen; ez ne zavarjon meg![/OFF] #}
+

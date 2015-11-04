@@ -1,0 +1,3 @@
+Kedves [B]{{ user.name }}[/B],
+
+[P]csak akkor tudod törölni magad a [L:http://ph.hangya.net/terkeph/]TérkéPH![/L]-ről, ha rajta vagy :P[/P]

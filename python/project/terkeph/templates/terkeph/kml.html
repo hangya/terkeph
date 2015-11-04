@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Folder>
+    <name>TérkéPH!</name>
+{% for user in users %}    <Placemark>
+      <name>{{ user.name|escape }}</name>
+      <Point><coordinates>{{ user.kml_point }}</coordinates></Point>
+      <Style><IconStyle><Icon><href>{{ user.avatar_url }}</href></Icon></IconStyle></Style>
+    </Placemark>
+{% endfor %}
+  </Folder>
+</kml>

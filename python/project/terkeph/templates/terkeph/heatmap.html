@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}HőtérkéPH!{% endblock %}
+{% block description %}Prohardver! fórum felhasználóinak térképe{% endblock %}
+
+{% block extrahead %}
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+  <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDMr9Wl7fxK9EGVy3ZXWAHv8QT2ktvN3Tc&sensor=false&libraries=visualization"></script>
+  
+  <script type="text/javascript">
+var map;
+var userek = [{% for user in users %}
+  new google.maps.LatLng({{ user.point }}),{% endfor %}
+];
+var currentlat = 47.497914;
+var currentlng = 19.040200;
+var currentzoom = 8;
+var currentmaptype = 'p';
+
+function updateHash() {
+    document.location.hash = '#'+currentlat.toString()+
+        '+'+currentlng.toString()+
+        '+'+currentzoom.toString()+
+        '+'+currentmaptype;
+}
+
+function parserUrl() {
+    return encodeURIComponent('http://terkeph.hangya.net/parse?lat='+currentlat.toString()+'&lng='+currentlng.toString()+'&zoom='+currentzoom.toString()+'&type='+currentmaptype)
+}
+
+function initialize() {
+  var MAP_TYPES = {
+    'm': google.maps.MapTypeId.ROADMAP,
+    'h': google.maps.MapTypeId.HYBRID,
+    'k': google.maps.MapTypeId.SATELLITE,
+    'p': google.maps.MapTypeId.TERRAIN
+  };
+  var TYPES_ARRAY = []
+  for (map_type in MAP_TYPES) { 
+    TYPES_ARRAY.push(MAP_TYPES[map_type]); 
+  }
+
+  map = new google.maps.Map(document.getElementById('map-canvas'), { 
+    mapTypeControlOptions: {mapTypeIds: TYPES_ARRAY},
+    mapTypeControl: true,
+    animatedZoom: false
+  });
+  if (document.location.hash.length > 1) {
+    frags = document.location.hash.substr(1).split('+');
+    if (!isNaN(parseFloat(frags[0]))) { currentlat = parseFloat(frags[0]); }
+    if (!isNaN(parseFloat(frags[1]))) { currentlng = parseFloat(frags[1]); }
+    if (!isNaN(parseInt(frags[2]))) { currentzoom = parseFloat(frags[2]); }
+    if (frags[3] in MAP_TYPES) { currentmaptype = frags[3]; }
+  }
+  updateHash();
+
+  map.setCenter(new google.maps.LatLng(currentlat, currentlng));
+  map.setZoom(currentzoom);
+  map.setMapTypeId(MAP_TYPES[currentmaptype]);
+
+
+  google.maps.event.addListener(map, 'dragend', function() {
+    currentlat = map.getCenter().lat();
+    currentlng = map.getCenter().lng();
+    currentzoom = map.getZoom();
+    updateHash();
+  });
+  google.maps.event.addListener(map, 'maptypeid_changed', function() {
+    for (map_type in MAP_TYPES) {
+      if (MAP_TYPES[map_type] == map.getMapTypeId()) {
+        currentmaptype = map_type;
+      }
+    }
+    updateHash();
+  });
+
+  var pointArray = new google.maps.MVCArray(userek);
+  heatmap = new google.maps.visualization.HeatmapLayer({
+        data: pointArray,
+        maxIntensity: 10,
+        opacity: 0.7,
+        radius: 20
+      });
+  heatmap.setMap(map);
+  
+
+
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+
+
+  </script>
+  
+  <style type="text/css">
+    @import url("{{ STATIC_URL }}terkeph/css/main.css");
+  </style>
+{% endblock %}
+
+{% block body %}
+  <div id="map-canvas"></div>
+{% endblock %}

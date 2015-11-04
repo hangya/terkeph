@@ -1,0 +1,5 @@
+*.pyc
+python/django
+python/project.env
+python/project/settings_local.py
+config/

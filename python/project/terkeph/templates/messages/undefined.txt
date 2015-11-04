@@ -1,0 +1,16 @@
+Kedves [B]{{ user.name }}[/B],
+
+Az általad küldött üzenetet* nem sikerült értelmeznünk.
+
+[I]Tipp:[/I] Elképzelhető hogy nem voltál bejelentkezve a prohardver.hu-ra, 
+miközben megnyomtad a gombot a beállításhoz/törléshez, ilyenkor login ablak 
+után egy üres privát üzenet szerkesztéséhez jutsz.
+
+Ha ez történt, immár bejelentkezve próbáld előlről a műveletet!
+
+Ha továbbra sem boldolulsz, keresd [L:http://prohardver.hu/tag/redant.html]RedAnt[/L]-ot!
+
+
+* az üzenet tartalma:
+[C]{{ content }}[/C]
+
