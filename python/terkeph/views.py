@@ -2,11 +2,11 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
-from project.terkeph.models import PhUser
+from terkeph.models import PhUser
 from django.conf import settings
 import logging
 
-from project.terkeph.prohardver import PhSession 
+from terkeph.prohardver import PhSession 
 
 logger = logging.getLogger('terkeph')
 
@@ -61,7 +61,8 @@ def json(request):
   response = render_to_response(
     'terkeph/json.html', {
       'users': users
-    }, content_type='application/json; charset=utf-8')
+    }, content_type='application/json; charset=utf-8',
+     context_instance=RequestContext(request))
   response['Expires'] = 'Fri, 01 Jan 1990 00:00:00 GMT'
 #  response['Content-Length'] = str(len(response.content))
   return response

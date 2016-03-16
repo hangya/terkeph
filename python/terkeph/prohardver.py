@@ -9,7 +9,7 @@ import urllib2
 import logging
 import decimal
 #from django.conf import settings
-from project.terkeph.models import PhUser
+from terkeph.models import PhUser
 
 logger = logging.getLogger('terkeph')
 

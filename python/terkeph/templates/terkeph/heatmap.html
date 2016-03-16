@@ -5,10 +5,10 @@
 
 {% block extrahead %}
   <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-  <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDMr9Wl7fxK9EGVy3ZXWAHv8QT2ktvN3Tc&sensor=false&libraries=visualization"></script>
+  <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+  <script src="//maps.googleapis.com/maps/api/js?key=AIzaSyDMr9Wl7fxK9EGVy3ZXWAHv8QT2ktvN3Tc&sensor=false&libraries=visualization"></script>
   
-  <script type="text/javascript">
+  <script>
 var map;
 var userek = [{% for user in users %}
   new google.maps.LatLng({{ user.point }}),{% endfor %}
@@ -93,8 +93,8 @@ google.maps.event.addDomListener(window, 'load', initialize);
 
   </script>
   
-  <style type="text/css">
-    @import url("{{ STATIC_URL }}terkeph/css/main.css");
+  <style>
+    @import url("/static/terkeph/css/main.css");
   </style>
 {% endblock %}
 

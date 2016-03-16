@@ -1,5 +1,5 @@
 from django.contrib import admin
-from project.terkeph.models import PhUser
+from terkeph.models import PhUser
 
 class PhUserAdmin(admin.ModelAdmin):
   search_fields = ['name'] 

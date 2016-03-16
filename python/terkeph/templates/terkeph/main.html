@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}TérkéPH!{% endblock %}
+{% block description %}Prohardver! fórum felhasználóinak térképe{% endblock %}
+
+{% block extrahead %}
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+  <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+  <script src="//maps.googleapis.com/maps/api/js?key=AIzaSyDMr9Wl7fxK9EGVy3ZXWAHv8QT2ktvN3Tc&sensor=false"></script>
+  
+  <script>
+    var robot_id = {{ robot_userid }};
+  </script>
+  
+  <script src="/static/terkeph/js/terkeph.js?302"></script>
+  
+  <style>
+    @import url("/static/terkeph/css/main.css?302");
+  </style>
+{% endblock %}
+
+{% block body %}
+  <div id="map-canvas"></div>
+{% endblock %}
