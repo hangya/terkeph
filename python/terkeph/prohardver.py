@@ -147,7 +147,7 @@ class PhSession:
             return [] # could not download unread private senders, return no users
         
         unread_senders = re.finditer(
-                r'<tr class=".*?feat">\s*<td class="face"><img src="/dl/faces/small/(?P<avatar>.*?).gif" alt="" /></td>\s*'
+                r'<tr class=".*?feat">\s*<td class="face"><img src="/dl/faces/small/(?P<avatar>[^"]*?).gif" alt="" /></td>\s*'
                 +'<td class="title"><a href="/privat/(?P<slug>.*?)/listaz.php(?P<offset>.*?)">(?P<name>.*?)</a></td>\s*'
                 +'<td class="num_new">(?P<unread>\d+) db</td>.*?'
                 +'<a href="/muvelet/privbesz/torol.php\?oth_usrid=(?P<userid>\d*)&.*?</tr>', 
