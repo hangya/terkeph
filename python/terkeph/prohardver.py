@@ -88,8 +88,8 @@ class PhSession:
         
     def login(self):
         form_fields = {
-            'login_email': self.email,
-            'login_pass': self.password,
+            'email': self.email,
+            'pass': self.password,
             'stay': '1',
             'no_ip_check': '1',
             'leave_others': '1',
