@@ -17,7 +17,7 @@ function updateHash() {
 }
 
 function parserUrl() {
-    return encodeURIComponent('http://terkeph.hangya.net/parse?lat='+currentlat.toString()+'&lng='+currentlng.toString()+'&zoom='+currentzoom.toString()+'&type='+currentmaptype)
+    return encodeURIComponent('https://terkeph.hangya.net/parse?lat='+currentlat.toString()+'&lng='+currentlng.toString()+'&zoom='+currentzoom.toString()+'&type='+currentmaptype)
 }
 
 var findUserSelect = document.createElement('select');
@@ -55,7 +55,7 @@ function ProhardverControl(container, map) {
 	        map.add_iw.setPosition(map.add_point.getPosition());
                 
                 addPointForm = document.createElement('form');
-                addPointForm.action = 'http://prohardver.hu/muvelet/privat/uj.php?dstid='+robot_id+'&url='+parserUrl();
+                addPointForm.action = 'https://prohardver.hu/muvelet/privat/uj.php?dstid='+robot_id+'&url='+parserUrl();
                 addPointForm.method = 'post';
                 
                 addPointText = document.createTextNode('A TérkéPH!-re való felkerüléshez, vagy új elhelyezkedés megadásához fogd meg az alábbi pöcköt, húzd a megfelelő helyre, majd kattints ');
@@ -99,7 +99,7 @@ function ProhardverControl(container, map) {
         if (answer) {
             
             var delUserForm = document.createElement('form');
-            delUserForm.action = 'http://prohardver.hu/muvelet/privat/uj.php?dstid='+robot_id+'&url='+parserUrl();
+            delUserForm.action = 'https://prohardver.hu/muvelet/privat/uj.php?dstid='+robot_id+'&url='+parserUrl();
             delUserForm.method = 'post';
             
             var delUserInput = document.createElement('input');
@@ -242,13 +242,13 @@ function createMarker(input) {
     map: map,
     icon: {
       anchor: new google.maps.Point(25, 25),
-      url: 'http://prohardver.hu/dl/faces/' + input[2] + '.gif'
+      url: 'https://prohardver.hu/dl/faces/' + input[2] + '.gif'
     },
     title: input[1]
   });
 
   google.maps.event.addListener(marker, 'click', function() {
-    window.open('http://prohardver.hu/tag/' + input[0]+ '.html', 
+    window.open('https://prohardver.hu/tag/' + input[0]+ '.html', 
       input[0], 
       'top=80,left=190,width=656,height=650,titlebar,menubar,scrollbars,resizable');
   });

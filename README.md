@@ -1,2 +1,2 @@
 # terkeph
-A [TérkéPH!](http://terkeph.hangya.net/) forrása.
+A [TérkéPH!](https://terkeph.hangya.net/) forrása.
