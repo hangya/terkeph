@@ -20,13 +20,13 @@ class PhUser(models.Model):
     return "%s,%s" % (self.point_lng, self.point_lat)
 
   def avatar_url(self):
-    return "http://prohardver.hu/dl/faces/%s.gif" % self.avatar
+    return "https://prohardver.hu/dl/faces/%s.gif" % self.avatar
 
   def prohardver_url(self):
-    return "http://prohardver.hu/tag/%s.html" % self.slug
+    return "https://prohardver.hu/tag/%s.html" % self.slug
 
   def permalink_url(self):
-    return 'http://terkeph.hangya.net/#' + str(self.point_lat) + '+' + str(self.point_lng) + '+15'
+    return 'https://terkeph.hangya.net/#' + str(self.point_lat) + '+' + str(self.point_lng) + '+15'
 
   def prohardver_link(self):
     return "<a href=\"%s\" onclick=\"window.open('%s', '%s', 'top=80,left=190,width=656,height=650,titlebar,menubar,scrollbars,resizable');return false\"><img src=\"%s\" alt=\"\" /></a>" % (self.prohardver_url(), self.prohardver_url(), self.slug, self.avatar_url())

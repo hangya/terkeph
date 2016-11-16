@@ -1,13 +1,13 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
  <channel>
   <title>TérkéPH! pontok</title>
-  <link>http://terkeph.hangya.net/</link>
+  <link>https://terkeph.hangya.net/</link>
   <description>A PH! nemhivatalos térképén utoljára beállított pontok.</description>
   <language>hu-HU</language>
   <pubDate>{% now "r" %}</pubDate>
   <lastBuildDate>{% now "r" %}</lastBuildDate>
   <webMaster>ph@hangya.net (RedAnt)</webMaster>
-  <atom:link href="http://terkeph.hangya.net/feed" rel="self" type="application/rss+xml" />{% for user in users %}
+  <atom:link href="https://terkeph.hangya.net/feed" rel="self" type="application/rss+xml" />{% for user in users %}
   <item>
     <title>{{ user.name }}</title>
     <link>{{ user.permalink_url }}</link>

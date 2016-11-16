@@ -96,7 +96,7 @@ class PhSession:
         }
         form_data = urllib.urlencode(form_fields)
         try:
-          request = urllib2.Request(url="http://prohardver.hu/muvelet/hozzaferes/belepes.php")
+          request = urllib2.Request(url="https://prohardver.hu/muvelet/hozzaferes/belepes.php")
           request.add_header('Content-Type', 'application/x-www-form-urlencoded')
           request.add_data(form_data)
           result = urllib2.urlopen(request)
@@ -109,7 +109,7 @@ class PhSession:
     def get_page(self, path='/'):
         "returns the content of an authenticated page"
         logger.info('fetching %s with cookie %s' % (path, self.cookie))
-        request = urllib2.Request(url="http://prohardver.hu%s" % path)
+        request = urllib2.Request(url="https://prohardver.hu%s" % path)
         request.add_header('Cookie', self.cookie)
         result = urllib2.urlopen(request)
         return result.read()
@@ -127,7 +127,7 @@ class PhSession:
 	  logger.error('exception! %s' % e)
 	try:
           logger.debug("creating private send request")
-	  request = urllib2.Request(url="http://prohardver.hu/muvelet/privat/uj.php?dstid=%s" % recepient.uid)
+	  request = urllib2.Request(url="https://prohardver.hu/muvelet/privat/uj.php?dstid=%s" % recepient.uid)
           logger.debug("sending to uid %s" % recepient.uid)
 	  request.add_header('Content-Type', 'application/x-www-form-urlencoded')
           request.add_header('Cookie', self.cookie)
