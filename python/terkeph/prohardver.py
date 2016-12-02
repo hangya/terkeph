@@ -84,6 +84,7 @@ class PhSession:
         "logs in, creates self.cookie used for authentication"
         self.email = email
         self.password = password
+        self.cookie = ''
         self.login()
         
     def login(self):
@@ -100,7 +101,9 @@ class PhSession:
           request.add_header('Content-Type', 'application/x-www-form-urlencoded')
           request.add_data(form_data)
           result = urllib2.urlopen(request)
-          self.cookie = result.info()['set-cookie'].split(';')[0]
+          for header in result.info().headers:
+            if header.startswith('Set-Cookie'):
+              self.cookie += header.split(':')[1].split(';')[0]+'; '
         except urllib2.URLError, error:
           logger.info('urlopen error: %s' % error)
           raise
