@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
@@ -53,10 +53,8 @@ def kml(request):
 
 
 def json(request):
-    users = PhUser.objects.order_by('slug')
-    response = render(request, 'terkeph/json.html', {
-        'users': users
-    }, content_type='application/json; charset=utf-8',)
+    users = PhUser.objects.order_by('slug').values_list('slug', 'name', 'avatar', 'latlng')
+    response = JsonResponse(list(users), safe=False)
 
     response['Expires'] = 'Fri, 01 Jan 1990 00:00:00 GMT'
     #response['Content-Length'] = str(len(response.content))

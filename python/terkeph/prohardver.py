@@ -50,11 +50,8 @@ class PhPrivateMessage:
             if action == 'add':
                 logger.info('start add')
                 try:
-                    lat, lng = self.get_value('point').split(',')
-                    logger.debug('lat: %s, lng: %s' % (lat, lng))
-                    self.sender.point_lat = decimal.Decimal(lat)
-                    self.sender.point_lng = decimal.Decimal(lng)
-                    logger.debug('coordinates set to %s %s' % (self.sender.point_lat, self.sender.point_lng))
+                    self.sender.latlng = self.get_value('point')
+                    logger.debug('latlng: %s' % self.sender.latlng)
                     self.sender.save()
                     logger.debug('%s saved' % self.sender)
                     self.session.send_private(self.sender, 'add', {'user': self.sender})

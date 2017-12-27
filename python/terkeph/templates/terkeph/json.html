@@ -1,4 +1,4 @@
 [{% for user in users %}
-["{{ user.slug }}","{{ user.name|escape }}","{{ user.avatar }}",{{ user.point }}]{% if not forloop.last %},{% endif %}{% endfor %}
+["{{ user.slug }}","{{ user.name|escape }}","{{ user.avatar }}",{{ user.latlng }}]{% if not forloop.last %},{% endif %}{% endfor %}
 ]
 

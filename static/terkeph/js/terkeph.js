@@ -1,6 +1,3 @@
-// TerkePH! map viewer
-// Copyright 2008-2013, Ronkay Janos Peter
-
 var map;
 
 // set default view settings
@@ -215,7 +212,7 @@ function initialize() {
             
     for (var i=0; i<data.length; i++) {
       var option = document.createElement('option')
-      option.value = data[i][3].toString()+','+data[i][4].toString()
+      option.value = data[i][3]
       option.appendChild(document.createTextNode(data[i][1]));
       findUserSelect.appendChild(option);
     }
@@ -237,8 +234,9 @@ function initialize() {
 
 
 function createMarker(input) {
+  var latlng = input[3].split(',', 2);
   var marker = new google.maps.Marker({
-    position: new google.maps.LatLng(input[3], input[4]),
+    position: new google.maps.LatLng(parseFloat(latlng[0]), parseFloat(latlng[1])),
     map: map,
     icon: {
       anchor: new google.maps.Point(25, 25),
