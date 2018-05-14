@@ -1,7 +1,7 @@
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.template import RequestContext
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from terkeph.models import PhUser
 from django.conf import settings
 import logging
@@ -13,17 +13,10 @@ logger = logging.getLogger('terkeph')
 def main(request):
     return render(request, 'terkeph/main.html', {
         'robot_userid': 93065,
-        'js_api_key': settings.JS_API_KEY,
-    })
-
-def heatmap(request):
-    users = PhUser.objects.order_by('slug')
-    return render(request, 'terkeph/heatmap.html', {
-        'users': users,
     })
 
 def parse(request):
-    if request.GET.has_key('lat'):
+    if 'lat' in request.GET:
         fragment = '#%s+%s+%s+%s' % (request.GET['lat'], request.GET['lng'], request.GET['zoom'], request.GET['type'])
     else:
         fragment = '#'
@@ -35,8 +28,8 @@ def parse(request):
         logger.info('privates parsed')
         # privates parsed
         return HttpResponseRedirect(reverse('main')+fragment)
-    except:
-        logger.error("could not create ph session")
+    except Exception as e:
+        logger.error("could not create ph session: %s" % type(e))
         return HttpResponseRedirect(reverse('main')+fragment)
 
 def feed(request):
@@ -57,6 +50,5 @@ def json(request):
     response = JsonResponse(list(users), safe=False)
 
     response['Expires'] = 'Fri, 01 Jan 1990 00:00:00 GMT'
-    #response['Content-Length'] = str(len(response.content))
     return response
 

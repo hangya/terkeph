@@ -1,9 +1,7 @@
-# -*- coding:utf8 -*-
 # Django settings for project project.
 
 DEBUG = False
-#DEBUG = True
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = 'Europe/Budapest'
 LANGUAGE_CODE = 'en-us'
 SITE_ID = 1
 USE_I18N = True
@@ -49,5 +47,5 @@ INSTALLED_APPS = (
     'django.contrib.admin',
 )
 
-from settings_local import *
+from .settings_local import *
 

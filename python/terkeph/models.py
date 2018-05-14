@@ -9,7 +9,7 @@ class PhUser(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
   
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def point_lat(self):

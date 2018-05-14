@@ -1,5 +1,4 @@
 *.pyc
-python/django
+pyenv/
 python/project.env
 python/project/settings_local.py
-config/

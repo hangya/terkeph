@@ -4,7 +4,6 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.main, name='main'),
-    url(r'^heatmap$', views.heatmap, name='heatmap'),
     url(r'^parse$', views.parse, name='parse'),
     url(r'^feed$', views.feed, name='feed'),
     url(r'^kml$', views.kml, name='kml'),

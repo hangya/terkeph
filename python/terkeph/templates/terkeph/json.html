@@ -1,4 +1,0 @@
-[{% for user in users %}
-["{{ user.slug }}","{{ user.name|escape }}","{{ user.avatar }}",{{ user.latlng }}]{% if not forloop.last %},{% endif %}{% endfor %}
-]
-

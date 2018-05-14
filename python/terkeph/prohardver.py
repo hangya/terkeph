@@ -1,14 +1,8 @@
-# -*- coding:utf-8 -*- 
-
-from django.template.loader import get_template
-from django.template import Context
+from django.template.loader import render_to_string
 import re
-#import os
-import urllib
-import urllib2
+import requests
 import logging
 import decimal
-#from django.conf import settings
 from terkeph.models import PhUser
 
 logger = logging.getLogger('terkeph')
@@ -23,14 +17,18 @@ class PhPrivateMessage:
         logger.debug('private content: %s' % self.content)
 
     def get_value(self, keyname):
+        logger.info('getting %s' % (keyname))
         try:
             value = re.search(r'^'+keyname+'=(.*)$', self.content, re.M).group(1)
-        except AttributeError:
+            logger.info('value: %s' % value)
+        except Exception as e:
+            logger.error('exception: %s' % e)
             value = ''
+        logger.info('key: %s, value: %s' % (keyname, value))
         return value
     
     def error(self, message):
-        logger.info('Error while parsing private msg from %s: %s\n%s' % (self.sender.slug, message, unicode(self.content.decode('utf-8'))))
+        logger.info('Error while parsing private msg from %s: %s\n%s' % (self.sender.slug, message, self.content))
         
     def parse(self):
         logger.info('parse function')
@@ -81,7 +79,7 @@ class PhSession:
         "logs in, creates self.cookie used for authentication"
         self.email = email
         self.password = password
-        self.cookie = ''
+        self.cookies = ''
         self.login()
         
     def login(self):
@@ -92,49 +90,36 @@ class PhSession:
             'no_ip_check': '1',
             'leave_others': '1',
         }
-        form_data = urllib.urlencode(form_fields)
         try:
-          request = urllib2.Request(url="https://prohardver.hu/muvelet/hozzaferes/belepes.php")
-          request.add_header('Content-Type', 'application/x-www-form-urlencoded')
-          request.add_data(form_data)
-          result = urllib2.urlopen(request)
-          for header in result.info().headers:
-            if header.startswith('Set-Cookie'):
-              self.cookie += header.split(':')[1].split(';')[0]+'; '
-        except urllib2.URLError, error:
-          logger.info('urlopen error: %s' % error)
-          raise
+            result = requests.post("https://prohardver.hu/muvelet/hozzaferes/belepes.php", form_fields)
+            self.cookies = result.cookies
+        except Exception as error:
+            logger.info('urlopen error: %s' % error)
+            raise
           
         
     def get_page(self, path='/'):
         "returns the content of an authenticated page"
-        logger.info('fetching %s with cookie %s' % (path, self.cookie))
-        request = urllib2.Request(url="https://prohardver.hu%s" % path)
-        request.add_header('Cookie', self.cookie)
-        result = urllib2.urlopen(request)
-        return result.read()
+        logger.info('fetching %s' % (path))
+        result = requests.get("https://prohardver.hu%s" % path, cookies=self.cookies)
+        return result.text
 
     def send_private(self, recepient, template_name, values):
-        #logger.debug('sending private to %s' % recepient)
-        template = get_template('messages/%s.txt' % template_name)
-	message = template.render(Context(values))
+        logger.debug('sending private to %s' % recepient)
+        message = render_to_string('messages/%s.txt' % template_name, values)
+        logger.debug('message: %s' % message)
         try:
-          logger.debug('message: %s' % message.encode('utf-8'))
-	  form_fields = {"content": message.encode('utf-8')}
-	  form_data = urllib.urlencode(form_fields)
-          logger.debug('form data: %s' % form_data)
-	except Exception as e:
-	  logger.error('exception! %s' % e)
-	try:
-          logger.debug("creating private send request")
-	  request = urllib2.Request(url="https://prohardver.hu/muvelet/privat/uj.php?dstid=%s" % recepient.uid)
-          logger.debug("sending to uid %s" % recepient.uid)
-	  request.add_header('Content-Type', 'application/x-www-form-urlencoded')
-          request.add_header('Cookie', self.cookie)
-          request.add_data(form_data)
-          result = urllib2.urlopen(request)
-	except:
-	  logger.error('could not send private to %s' % recepient.slug)
+            logger.debug('message: %s' % message)
+            form_fields = {"content": message}
+            logger.debug('form data: %s' % form_fields)
+        except Exception as e:
+            logger.error('exception! %s' % e)
+        try:
+            logger.debug("creating private send request")
+            result = requests.post("https://prohardver.hu/muvelet/privat/uj.php?dstid=%s" % recepient.uid, form_fields, cookies=self.cookies)
+            logger.debug("sending to uid %s" % recepient.uid)
+        except:
+            logger.error('could not send private to %s' % recepient.slug)
  
     def privates_unread_senders(self):
         "which users sent new messages"
@@ -157,23 +142,24 @@ class PhSession:
         for unread_sender in unread_senders:
             userdict = unread_sender.groupdict()
             logger.debug('new private from %s' % userdict['slug'])
-            userdict['name'] = unicode(userdict['name'].decode('utf-8'))
+            userdict['name'] = userdict['name']
             try:
-              ph_user = PhUser.objects.get(uid=userdict['userid'])
-              # update values
-              logger.debug('updating %s' % userdict['slug'])
-              ph_user.slug = userdict['slug']
-              ph_user.name = userdict['name']
-              ph_user.avatar = userdict['avatar']
+                ph_user = PhUser.objects.get(uid=userdict['userid'])
+                # update values
+                logger.debug('updating %s' % userdict['slug'])
+                ph_user.slug = userdict['slug']
+                ph_user.name = userdict['name']
+                ph_user.avatar = userdict['avatar']
             except Exception as e: # create user if not exist
-              logger.debug('exception: %s' %e)
-              logger.debug('creating %s' % userdict['slug'])
-              ph_user = PhUser(
-                uid = int(userdict['userid']),
-                slug = userdict['slug'],
-                name = userdict['name'],
-                avatar = userdict['avatar'])
- 
+                logger.debug('exception: %s' %e)
+                logger.debug('creating %s' % userdict['slug'])
+                ph_user = PhUser(
+                  uid = int(userdict['userid']),
+                  slug = userdict['slug'],
+                  name = userdict['name'],
+                  avatar = userdict['avatar']
+                )
+
             
             #ph_user.put() # kiszedve, nem biztos hogy letre akarjuk hozni
             
@@ -189,13 +175,13 @@ class PhSession:
         for (sender, offset) in senders:
             logger.debug('unread private from %s' % sender.slug)
             #sender.parse_privates(self, offset)
-	    try:
-	      page = self.get_page("/privat/%s/listaz.php%s" % (sender.slug, offset))
-	    except:
-	      logger.error('could not download privates')
-	    unread_messages = re.findall(r'<div class="msg flc isnew">.*?<p class="mgt\d">(.*?)</p>', page, re.DOTALL)
-	    for unread_message in unread_messages:
-              logger.debug('unread message: %s' % unread_message)
-	      ph_message = PhPrivateMessage(self, sender, unread_message)
-	      ph_message.parse()
+            try:
+                page = self.get_page("/privat/%s/listaz.php%s" % (sender.slug, offset))
+            except:
+                logger.error('could not download privates')
+            unread_messages = re.findall(r'<div class="msg flc isnew">.*?<p class="mgt\d">(.*?)</p>', page, re.DOTALL)
+            for unread_message in unread_messages:
+                logger.debug('unread message: %s' % unread_message)
+                ph_message = PhPrivateMessage(self, sender, unread_message)
+                ph_message.parse()
 
