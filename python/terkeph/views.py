@@ -17,7 +17,7 @@ def main(request):
 
 def parse(request):
     if 'lat' in request.GET:
-        fragment = '#%s+%s+%s+%s' % (request.GET['lat'], request.GET['lng'], request.GET['zoom'], request.GET['type'])
+        fragment = '#%s+%s+%s+%s' % (request.GET.get('lat'), request.GET.get('lng'), request.GET.get('zoom'), request.GET.get('type'))
     else:
         fragment = '#'
     try:
