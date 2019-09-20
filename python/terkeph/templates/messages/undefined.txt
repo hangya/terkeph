@@ -1,16 +1,16 @@
-Kedves [B]{{ user.name }}[/B],
+<p>Kedves <b>{{ user.name }}</b></p>
 
-Az általad küldött üzenetet* nem sikerült értelmeznünk.
+<p>Az általad küldött üzenetet* nem sikerült értelmeznünk.</p>
 
-[I]Tipp:[/I] Elképzelhető hogy nem voltál bejelentkezve a prohardver.hu-ra, 
+<p><i>Tipp:</i> Elképzelhető hogy nem voltál bejelentkezve a prohardver.hu-ra, 
 miközben megnyomtad a gombot a beállításhoz/törléshez, ilyenkor login ablak 
-után egy üres privát üzenet szerkesztéséhez jutsz.
+után egy üres privát üzenet szerkesztéséhez jutsz.</p>
 
-Ha ez történt, immár bejelentkezve próbáld előlről a műveletet!
+<p>Ha ez történt, immár bejelentkezve próbáld előlről a műveletet!</p>
 
-Ha továbbra sem boldolulsz, keresd [L:https://prohardver.hu/tag/redant.html]RedAnt[/L]-ot!
+<p>Ha továbbra sem boldolulsz, keresd <a href="https://prohardver.hu/tag/redant.html" target="_blank" rel="noopener">RedAnt</a>-ot!</p>
 
 
-* az üzenet tartalma:
-[C]{{ content }}[/C]
+<p>* az üzenet tartalma:</p>
+<p><code><samp>{{ content }}</samp></code></p>
 

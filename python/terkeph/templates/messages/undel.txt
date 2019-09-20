@@ -1,3 +1,3 @@
-Kedves [B]{{ user.name }}[/B],
+<p>Kedves <b>{{ user.name }}</b>,</p>
 
-[P]csak akkor tudod törölni magad a [L:https://terkeph.hangya.net/]TérkéPH![/L]-ről, ha rajta vagy :P[/P]
+<p>csak akkor tudod törölni magad a <a href="https://terkeph.hangya.net/" target="_blank" rel="noopener">TérkéPH!</a>-ről, ha rajta vagy :P</p>

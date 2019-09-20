@@ -1,6 +1,5 @@
-Kedves [B]{{ user.name }}[/B],
+<p>Kedves <b>{{ user.name }}</b>,</p>
 
-[P]sikeresen elhelyezted magad a [L:{{ user.permalink_url }}]TérkéPH![/L]-en.  :) [/P]
+<p>sikeresen elhelyezted magad a <a href="{{ user.permalink_url }}" target="_blank" rel="noopener">TérkéPH!</a>-en.  :) </p>
 
-{# [OFF]A gyorsítótárazási beállítások miatt lehet hogy pár percig nem jelensz meg az új helyen; ez ne zavarjon meg![/OFF] #}
 

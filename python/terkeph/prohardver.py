@@ -13,7 +13,7 @@ class PhPrivateMessage:
         
         self.session = session
         self.sender = sender
-        self.content = re.sub('<br />', '\n', content)
+        self.content = re.sub('<br/>', '\n', content)
         logger.debug('private content: %s' % self.content)
 
     def get_value(self, keyname):
@@ -83,15 +83,28 @@ class PhSession:
         self.login()
         
     def login(self):
+        result = requests.get("https://prohardver.hu/privatok/listaz.php")
+        self.cookies = result.cookies
+        result = requests.get("https://prohardver.hu/privatok/listaz.php", cookies=self.cookies)
+        fid = re.search('<input type="hidden" name="fidentifier" value="([^"]*)"/>', result.text).group(1)
         form_fields = {
-            'email': self.email,
-            'pass': self.password,
-            'stay': '1',
-            'no_ip_check': '1',
-            'leave_others': '1',
+            'fidentifier': (None, fid),
+            'email': (None, self.email),
+            'pass': (None, self.password),
+            'all': (None, '1'),
+            'stay': (None, '1'),
+            'no_ip_check': (None, '1'),
+            'leave_others': (None, '1'),
         }
+        headers = {
+            'Accept': 'application/json, text/javascript, */*; q=0.01',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+        logger.info(form_fields)
         try:
-            result = requests.post("https://prohardver.hu/muvelet/hozzaferes/belepes.php", form_fields)
+            result = requests.post("https://prohardver.hu/muvelet/hozzaferes/belepes.php", files=form_fields, cookies=self.cookies, headers=headers)
+            logger.info('login result: %s' % result)
+            logger.info('login result: %s' % result.text)
             self.cookies = result.cookies
         except Exception as error:
             logger.info('urlopen error: %s' % error)
@@ -101,22 +114,33 @@ class PhSession:
     def get_page(self, path='/'):
         "returns the content of an authenticated page"
         logger.info('fetching %s' % (path))
-        result = requests.get("https://prohardver.hu%s" % path, cookies=self.cookies)
-        return result.text
+        try:
+            result = requests.get("https://prohardver.hu%s" % path, cookies=self.cookies)
+            logger.info('result: %s' % result)
+            return result.text
+        except Exception as error:
+            logger.info('get_page error: ' + error)
 
     def send_private(self, recepient, template_name, values):
         logger.debug('sending private to %s' % recepient)
+        page = self.get_page("/privat/%s/kuld.php" % recepient.slug)
+        fid = re.search('<input type="hidden" name="fidentifier" value="([^"]*)"/>', page).group(1)
         message = render_to_string('messages/%s.txt' % template_name, values)
         logger.debug('message: %s' % message)
-        try:
-            logger.debug('message: %s' % message)
-            form_fields = {"content": message}
-            logger.debug('form data: %s' % form_fields)
-        except Exception as e:
-            logger.error('exception! %s' % e)
+        form_fields = {
+            "fidentifier": (None, fid),
+            "mce_0": (None, ""),
+            "content": (None, message)
+        }
+        logger.debug('form data: %s' % form_fields)
+        headers = {
+            'Accept': 'application/json, text/javascript, */*; q=0.01',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
         try:
             logger.debug("creating private send request")
-            result = requests.post("https://prohardver.hu/muvelet/privat/uj.php?dstid=%s" % recepient.uid, form_fields, cookies=self.cookies)
+            result = requests.post("https://prohardver.hu/muvelet/privat/uj.php?dstid=%s" % recepient.uid, files=form_fields, cookies=self.cookies, headers=headers)
+            logger.debug('send private result: %s, %s' % (result, result.text))
             logger.debug("sending to uid %s" % recepient.uid)
         except:
             logger.error('could not send private to %s' % recepient.slug)
@@ -132,11 +156,14 @@ class PhSession:
             return [] # could not download unread private senders, return no users
         
         unread_senders = re.finditer(
-                r'<tr class=".*?feat">\s*<td class="face"><img src="/dl/faces/small/(?P<avatar>[^"]*?).gif" alt="" /></td>\s*'
-                +'<td class="title"><a href="/privat/(?P<slug>.*?)/listaz.php(?P<offset>.*?)">(?P<name>.*?)</a></td>\s*'
-                +'<td class="num_new">(?P<unread>\d+) db</td>.*?'
-                +'<a href="/muvelet/privbesz/torol.php\?oth_usrid=(?P<userid>\d*)&.*?</tr>', 
-                page, re.DOTALL)
+            r'<li class="media thread-unread">\s*<div class="media-body">\s*<div class="col thread-face">\s*'
+            +'<img src="/dl/faces/small/(?P<avatar>[^"]*?).gif" alt="" />\s*</div>\s*<div class="col thread-title-user">\s*'
+            +'<a href="/privat/(?P<slug>.*?)/listaz.php(?P<offset>.*?)">(?P<name>.*?)</a>\s*</div>\s*'
+            +'<div class="col thread-num-msgs d-none d-md-block">(?P<unread>\d+) db</div>\s*'
+            +'<div class="col thread-num-msgs d-none d-md-block">(?P<count>\d+) db</div>\s*'
+            +'<div class="col thread-time d-none d-lg-block">(?P<last>[\d :-]+)</div>\s*<div class="col thread-action">\s*'
+            +'<button class="btn btn-xs" data-action-privconv-del="/muvelet/privbesz/torol.php\?oth_usrid=(?P<userid>\d*)',
+            page, re.DOTALL)
         
         unread_sender_list = []
         for unread_sender in unread_senders:
@@ -179,7 +206,7 @@ class PhSession:
                 page = self.get_page("/privat/%s/listaz.php%s" % (sender.slug, offset))
             except:
                 logger.error('could not download privates')
-            unread_messages = re.findall(r'<div class="msg flc isnew">.*?<p class="mgt\d">(.*?)</p>', page, re.DOTALL)
+            unread_messages = re.findall(r'<li class="media msg-featured">.*?<p class="mgt\d">(.*?)</p>', page, re.DOTALL)
             for unread_message in unread_messages:
                 logger.debug('unread message: %s' % unread_message)
                 ph_message = PhPrivateMessage(self, sender, unread_message)

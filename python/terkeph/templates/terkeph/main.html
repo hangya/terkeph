@@ -161,23 +161,15 @@
       // tag valaszto
 
       function beallitasForm() {
-        var form = L.DomUtil.create('form');
-        form.action = 'https://prohardver.hu/muvelet/privat/uj.php?dstid='+robot_id+'&url='+parserUrl();
-        form.method = 'post';
-        var text = L.DomUtil.create('p', '', form);
-        text.innerHTML = 'A TérkéPH!-re való felkerüléshez, vagy új elhelyezkedés megadásához fogd meg az alábbi pöcköt, húzd a megfelelő helyre, majd kattints ';
-        var input = L.DomUtil.create('input', '', form);
+        var text = L.DomUtil.create('p');
+        text.innerHTML = 'A TérkéPH!-re való felkerüléshez, vagy új elhelyezkedés megadásához fogd meg az alábbi pöcköt, húzd a megfelelő helyre, majd másold az alábbi szöveget <a href="https://prohardver.hu/privat/terkeph/kuld.php?url=' + parserUrl() +'">egy privát üzenetbe itt!</a>';
+        var input = L.DomUtil.create('textarea', '', text);
         input.name = 'content';
-        input.type = 'hidden';
+        // input.type = 'hidden';
         input.value = 'app=map\naction=add\npoint='+add_point.getLatLng().lat.toFixed(6).toString()+','+add_point.getLatLng().lng.toFixed(6).toString();
+        input.style.width = '100%';
 
-        var submit = L.DomUtil.create('input', '', form);
-        submit.name = 'submit';
-        submit.type = 'submit';
-        submit.value = 'ide!';
-
-
-        return form;
+        return text;
       }
 
       L.Control.Phcontrol = L.Control.extend({
@@ -217,18 +209,9 @@
 
           L.DomEvent.on(torlesLink, 'click', function(e) {
             e.preventDefault();
-            var answer = confirm('Biztosan le szeretnél kerülni a TérkéPH!-ről?\n\nTipp: ha csak át szeretnéd helyezni magad, ahhoz elég beállítani egy új helyet.');
+            var answer = confirm('Ha le szeretnél kerülni a TérkéPH!-ről, az OK gomb megnyomása után megjelenő privát üzenet szerkesztő ablakba másold az alábbi szöveget, majd küldd el:\n\napp=map\naction=del\n\nTipp: ha csak át szeretnéd helyezni magad, ahhoz elég beállítani egy új helyet.');
             if (answer) {
-              var form = L.DomUtil.create('form', '', torlesLink);
-              form.action = 'https://prohardver.hu/muvelet/privat/uj.php?dstid='+robot_id+'&url='+parserUrl();
-              form.method = 'post';
-              var input = L.DomUtil.create('input', '', form);
-              input.name = 'content';
-              input.type = 'hidden';
-              input.value = 'app=map\naction=del';
-              console.log(form);
-
-              form.submit();
+              window.location = 'https://prohardver.hu/privat/terkeph/kuld.php?url=' + parserUrl();
             }
           });
           
